@@ -1,0 +1,11 @@
+before_script:
+  - bundle install --jobs $(nproc) "${FLAGS[@]}"
+  - bundle exec rake db:setup RAILS_ENV=test
+
+test:
+  script:
+    - bundle exec rake test:units
+    - bundle exec rake test:functionals
+    - bundle exec cucumber
+    - if [ -d /home/sol ]; then rm -rf ./test && cp -r /home/sol/test ./ && bundle exec rake test; fi
+
