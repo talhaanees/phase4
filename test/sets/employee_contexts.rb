@@ -11,12 +11,12 @@ module Contexts
     end
     
     def remove_employees
-      @ed.destroy
-      @cindy.destroy
-      @ralph.destroy
-      @ben.destroy
-      @kathryn.destroy
-      @alex.destroy
+      @ed.delete
+      @cindy.delete
+      @ralph.delete
+      @ben.delete
+      @kathryn.delete
+      @alex.delete
     end
 
     def create_additional_employees
@@ -40,23 +40,23 @@ module Contexts
     end
 
     def remove_additional_employees
-      @freeman.destroy
-      @liu.destroy
-      @wilson.destroy
-      @correa.destroy
-      @hersh.destroy
-      @rubinstein.destroy
-      @brunk.destroy
-      @porter.destroy
-      @holt.destroy
-      @schell.destroy
-      @miller.destroy
-      @davis.destroy
-      @daigle.destroy
-      @olbeter.destroy
-      @wakeley.destroy 
-      @taylor.destroy
-      @mark.destroy
+      @freeman.delete
+      @liu.delete
+      @wilson.delete
+      @correa.delete
+      @hersh.delete
+      @rubinstein.delete
+      @brunk.delete
+      @porter.delete
+      @holt.delete
+      @schell.delete
+      @miller.delete
+      @davis.delete
+      @daigle.delete
+      @olbeter.delete
+      @wakeley.delete 
+      @taylor.delete
+      @mark.delete
     end
 
   end
