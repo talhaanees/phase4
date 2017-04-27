@@ -4,15 +4,50 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>GOES HERE...</title>
+    <title><%= content_for?(:title) ? yield(:title) : "The A & M Creamery" %></title>
     <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "vendor/modernizr" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
 
   <body>
-    <div>
-       <%= yield %>
-    </div>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">A & M Creamery</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><%= link_to "Home", home_home_path %></a></li>
+            <li><%= link_to "About Us", about_path %></span></li>
+            <li><%= link_to "Employees", employees_path %></li>
+            <li><%= link_to "Assignments", assignments_index_path %></li>
+            <li><%= link_to "Stores", stores_path %></li>
+            <li><%= link_to "Contact Us", contact_path %></li>
+            <li><%= link_to "Privacy Policy", privacy_path %></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <%= yield %>
     <%= javascript_include_tag "application" %>
+    <footer class = "site-footer">
+      <div class="row">
+        <div class="small-6 large-centered columns">
+          <div id="footer">
+            <%= render 'layouts/footer' %>
+          </div>
+        </div>
+      </div> 
+    </footer>
   </body>
 </html>
+
