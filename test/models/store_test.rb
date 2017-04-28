@@ -4,6 +4,9 @@ class StoreTest < ActiveSupport::TestCase
   # Test relationships
   should have_many(:assignments)
   should have_many(:employees).through(:assignments)
+  should have_many(:shifts).through(:assignments)
+  should have_many(:store_flavors)
+  should have_many(:flavors).through(:store_flavors)
 
   # Test basic validations
   should validate_presence_of(:name)
@@ -83,6 +86,38 @@ class StoreTest < ActiveSupport::TestCase
       assert_equal 1, Store.inactive.size
       assert_equal ["Hazelwood"], Store.inactive.alphabetical.map{|s| s.name}
     end
-  
+
+    should "have a method to identify geocoordinates of a store" do
+      coords = @cmu.get_store_coordinates
+      assert_in_delta(40.4434658, coords.first, 0.0001)
+      assert_in_delta(-79.9434567, coords.last, 0.0001)
+    end
+
+    should "fail to identify geocoordinates for a bogus store" do
+      klingon_store = FactoryGirl.build(:store, street: "Quin'lat", zip: "00000")
+      assert_nil klingon_store.get_store_coordinates
+    end
+
+    should "change the latitude and longitude of a store's record" do
+      assert_nil @cmu.latitude
+      assert_nil @cmu.longitude
+      @cmu.get_store_coordinates
+      @cmu.reload
+      assert_not_nil @cmu.latitude
+      assert_not_nil @cmu.longitude
+      assert_in_delta(40.4434658, @cmu.latitude, 0.0001)
+      assert_in_delta(-79.9434567, @cmu.longitude, 0.0001)
+    end
+
+    should "correctly assess that stores are not destroyable" do
+      deny @cmu.destroy
+      deny @hazelwood.destroy
+    end
+
+    should "make an undestroyed store inactive" do
+      deny @cmu.destroy
+      @cmu.reload
+      deny @cmu.active
+    end
   end
 end

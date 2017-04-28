@@ -47,7 +47,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
   gem 'faker'
-  gem 'rspec-rails'
+  #gem 'rspec-rails'
 end
 
 group :development do
@@ -64,6 +64,9 @@ group :test do
   gem 'shoulda-matchers'
   gem 'factory_girl'
   gem 'factory_girl_rails'
+  gem 'minitest'
+  gem 'minitest-rails'
+  gem 'minitest-reporters'
   gem 'mocha'
   gem 'cucumber'
   gem 'cucumber-rails', require: false

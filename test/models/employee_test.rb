@@ -4,6 +4,8 @@ class EmployeeTest < ActiveSupport::TestCase
   # Test relationships
   should have_many(:assignments)
   should have_many(:stores).through(:assignments)
+  should have_many(:shifts).through(:assignments)
+  should have_one(:user).dependent(:destroy)
   
   # Test basic validations
   should validate_presence_of(:first_name)
@@ -155,6 +157,53 @@ class EmployeeTest < ActiveSupport::TestCase
       assert_equal 19, @ed.age
       assert_equal 17, @cindy.age
       assert_equal 30, @kathryn.age
+    end   
+
+    # test that a model knows which employees are destroyable
+    should "recognize when an employee is destroyable" do 
+      create_stores
+      create_assignments
+      create_shifts
+      deny @kathryn.destroy,"#{@kathryn.shifts.upcoming.count}"
+      assert @cindy.destroy
+      remove_stores
+      remove_assignments
+      remove_shifts
     end
+
+    # employee w/ past shifts is properly terminated
+    should "properly handle case of employee with past shifts" do 
+      create_stores
+      create_assignments
+      create_shifts
+      kathryn_id = @kathryn.id
+      deny Assignment.current.for_employee(kathryn_id).empty?
+      deny Shift.past.for_employee(kathryn_id).empty?
+      deny Shift.upcoming.for_employee(kathryn_id).empty?
+      deny @kathryn.destroy
+      assert_equal Date.current, @kathryn.assignments.chronological.first.end_date
+      assert Shift.upcoming.for_employee(kathryn_id).empty?
+      remove_stores
+      remove_assignments
+      remove_shifts
+    end
+
+    # employee w/o past shifts is properly terminated
+    should "properly handle case of employee with no past shifts" do 
+      create_stores
+      create_assignments
+      create_upcoming_shifts
+      cindy_id = @cindy.id
+      deny Assignment.current.for_employee(cindy_id).empty?
+      deny Shift.upcoming.for_employee(cindy_id).empty?
+      assert @cindy.destroy
+      deny Employee.exists?(cindy_id)
+      assert Assignment.current.for_employee(cindy_id).empty?
+      assert Shift.upcoming.for_employee(cindy_id).empty?
+      remove_stores
+      remove_assignments
+      remove_upcoming_shifts
+    end
+
   end
 end

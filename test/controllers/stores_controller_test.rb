@@ -60,9 +60,12 @@ class StoresControllerTest < ActionController::TestCase
   end
 
   test "should destroy store" do
-    assert_difference('Store.count', -1) do
+    ## Because we no longer destroy stores, just make them inactive, these tests are different than phase 3
+    assert_difference('Store.count', 0) do
       delete :destroy, id: @cmu
     end
+    @cmu.reload
+    deny @cmu.active
     assert_redirected_to stores_path
     assert_equal "Successfully removed CMU from the AMC system.", flash[:notice]
   end

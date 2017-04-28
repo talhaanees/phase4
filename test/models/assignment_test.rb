@@ -4,6 +4,7 @@ class AssignmentTest < ActiveSupport::TestCase
   # Test relationships
   should belong_to(:employee)
   should belong_to(:store)
+  should have_many(:shifts)
 
   # Test basic validations
   # for pay level
@@ -119,5 +120,46 @@ class AssignmentTest < ActiveSupport::TestCase
       assert_equal 1.day.ago.to_date, @kathryn.assignments.first.end_date
       @promote_kathryn.destroy
     end
+
+    should "allow an assignment with no past shifts to be destroyed" do 
+      create_upcoming_shifts
+      assert @assign_cindy.shifts.past.empty?
+      assert @assign_cindy.destroy
+      remove_upcoming_shifts
+    end
+
+    should "allow a destroyable assignment has upcoming shifts removed" do 
+      create_upcoming_shifts
+      deny Shift.for_employee(@cindy.id).empty?
+      assert @assign_cindy.destroy
+      assert Shift.for_employee(@cindy.id).empty?
+      remove_upcoming_shifts  
+    end
+
+    should "not allow an assignment with past shifts to be destroyed" do 
+      create_past_shifts
+      deny @assign_ed_2.shifts.past.empty?
+      deny @assign_ed_2.destroy
+      remove_past_shifts
+    end
+
+    should "remove upcoming shifts from an assignment that was attempted to be destroyed" do 
+      create_shifts
+      deny Shift.for_employee(@kathryn.id).upcoming.empty?
+      deny @assign_kathryn.destroy
+      assert Shift.for_employee(@kathryn.id).upcoming.empty?
+      remove_shifts  
+    end
+
+    should "remove upcoming shifts from an assignment that was ended" do 
+      create_shifts
+      deny @assign_kathryn.shifts.upcoming.empty?
+      @assign_kathryn.end_date = Date.current
+      @assign_kathryn.save
+      @assign_kathryn.reload
+      assert @assign_kathryn.shifts.upcoming.empty?
+      remove_shifts      
+    end
+
   end
 end

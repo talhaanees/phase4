@@ -8,9 +8,9 @@ module Contexts
     end
     
     def remove_stores
-      @cmu.destroy
-      @hazelwood.destroy
-      @oakland.destroy
+      @cmu.delete
+      @hazelwood.delete
+      @oakland.delete
     end
 
     def create_additional_stores
@@ -20,9 +20,9 @@ module Contexts
     end
 
     def remove_additional_stores
-      @convention.destroy
-      @acac.destroy
-      @bistro.destroy
+      @convention.delete
+      @acac.delete
+      @bistro.delete
     end
   end
 end
